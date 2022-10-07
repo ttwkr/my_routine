@@ -4,8 +4,10 @@ import asyncio
 from fastapi import FastAPI
 
 from app.config import settings
+from app.routers import members
 
 app = FastAPI()
+app.include_router(members.router)
 
 
 @app.get("/")

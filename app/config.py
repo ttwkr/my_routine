@@ -13,3 +13,10 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+RDS_URL = "postgresql://{}:{}@{}:{}/{}".format(
+    settings.RDS_USER,
+    settings.RDS_PW,
+    settings.RDS_HOST,
+    settings.RDS_PORT,
+    settings.RDS_DB
+)
