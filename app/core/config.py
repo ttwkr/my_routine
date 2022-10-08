@@ -9,6 +9,8 @@ class CommonSettings(BaseSettings):
     RDS_DB: str
     RDS_PORT: int
     RDS_URL: str
+    MASTER_MAIL: str
+    MASTER_MAIL_PW: str
 
     class Config:
         env_file = ".env"

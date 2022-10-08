@@ -1,9 +1,8 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from app import config
 from sqlalchemy import create_engine
-from app.config import settings
+from app.core.config import settings
 
 engine = create_engine(settings.RDS_URL)
 
