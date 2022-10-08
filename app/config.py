@@ -1,22 +1,38 @@
 from pydantic import BaseSettings
 
 
-class Settings(BaseSettings):
+class CommonSettings(BaseSettings):
+    STAGE: str
     RDS_HOST: str
     RDS_USER: str
     RDS_PW: str
     RDS_DB: str
     RDS_PORT: int
+    RDS_URL: str
 
     class Config:
         env_file = ".env"
 
 
-settings = Settings()
-RDS_URL = "postgresql://{}:{}@{}:{}/{}".format(
-    settings.RDS_USER,
-    settings.RDS_PW,
-    settings.RDS_HOST,
-    settings.RDS_PORT,
-    settings.RDS_DB
-)
+class DevSettings(CommonSettings):
+    class Config:
+        env_file = ".env"
+
+
+class ProdSettings(CommonSettings):
+    class Config:
+        env_file = ".env.prod"
+
+
+# 환경 별로 분리
+class Settings:
+    @staticmethod
+    def env_load():
+        stage = CommonSettings().STAGE
+        if stage == 'dev':
+            return DevSettings()
+        elif stage == 'prod':
+            return ProdSettings()
+
+
+settings = Settings().env_load()

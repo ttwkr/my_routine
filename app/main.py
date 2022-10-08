@@ -7,7 +7,7 @@ from app.config import settings
 from app.routers import members
 
 app = FastAPI()
-app.include_router(members.router)
+app.include_router(prefix='/members', router=members.router)
 
 
 @app.get("/")

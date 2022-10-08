@@ -7,8 +7,13 @@ from app.database.models.members import Member
 router = APIRouter()
 
 
-@router.get('/members/')
-async def get_member(db: Session = Depends(get_db)):
+@router.get('/')
+async def get(db: Session = Depends(get_db)):
     members = db.query(Member).all()
 
     return members
+
+
+@router.post('/')
+async def save(db: Session = Depends(get_db)):
+    pass
