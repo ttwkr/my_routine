@@ -6,8 +6,16 @@ from fastapi import FastAPI
 from app.config import settings
 from app.routers import members
 
-app = FastAPI()
-app.include_router(prefix='/members', router=members.router)
+
+def create_app() -> FastAPI:
+    # 메인 앱실행
+    app = FastAPI()
+    # 라우터 추가
+    app.include_router(prefix='/members', router=members.router)
+    return app
+
+
+app = create_app()
 
 
 @app.get("/")
