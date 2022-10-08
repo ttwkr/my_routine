@@ -4,7 +4,6 @@ import datetime
 from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 
-from app.apis.members.crud import EmailVerifications
 from app.apis.members.module import Verification
 from app.core.common import Common
 from app.database.connection import get_db
@@ -40,14 +39,13 @@ async def send_code(data: SendMail, background_tasks: BackgroundTasks, db: Sessi
     :return:
     """
     common = Common()
-    email_verify = EmailVerifications(db=db)
     ver = Verification()
     # 인증코드생성
     code = common.rand_number_code()
     # 생성후 디비 저장
     now = datetime.datetime.now()
     instance = EmailVerificationModel(email=data.email, code=code, expired_at=now)
-    email_verify.save(instance=instance)
+    EmailVerificationModel().save(db=db, instance=instance)
     # 이메일 전송
     # 오래 걸려 백그라운드 작업으로 돌림(비동기
     background_tasks.add_task(ver.send_mail, code, data.email)
