@@ -14,7 +14,7 @@ class Verification:
         smtp.login(self._mail, self._password)
 
         msg = MIMEText(code)
-        msg['Subject'] = '테스트'
+        msg['Subject'] = '[마이루틴]인증메일 입니다.'
         msg['To'] = mail
         smtp.sendmail(self._mail, mail, msg.as_string())
 
