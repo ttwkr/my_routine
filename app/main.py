@@ -11,7 +11,7 @@ def create_app() -> FastAPI:
     # 메인 앱실행
     app = FastAPI()
     # 라우터 추가
-    app.include_router(prefix='/members', router=members.router)
+    app.include_router(prefix='/members', router=members.router, tags=['members'])
     return app
 
 
