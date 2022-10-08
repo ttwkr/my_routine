@@ -1,6 +1,7 @@
+import asyncio
 import datetime
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.apis.members.crud import EmailVerifications
@@ -30,9 +31,10 @@ async def save(db: Session = Depends(get_db)):
 
 
 @router.post('/send-code')
-async def send_code(data: SendMail, db: Session = Depends(get_db)):
+async def send_code(data: SendMail, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
     인증코드 전송
+    :param background_tasks:
     :param data:
     :param db:
     :return:
@@ -47,7 +49,8 @@ async def send_code(data: SendMail, db: Session = Depends(get_db)):
     instance = EmailVerificationModel(email=data.email, code=code, expired_at=now)
     email_verify.save(instance=instance)
     # 이메일 전송
-    ver.send_mail(code, data.email)
+    # 오래 걸려 백그라운드 작업으로 돌림(비동기
+    background_tasks.add_task(ver.send_mail, code, data.email)
 
     return data
 
