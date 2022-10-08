@@ -1,18 +1,21 @@
+import datetime
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.apis.members.crud import Verification
+from app.apis.members.crud import EmailVerifications
+from app.apis.members.module import Verification
 from app.core.common import Common
 from app.database.connection import get_db
-from app.database.models.members import Member
-from app.apis.members.schema import EmailVerification, SendMail
+from app.database.models.members import MemberModel, EmailVerificationModel
+from app.apis.members.schema import EmailVerificationSchema, SendMail
 
 router = APIRouter()
 
 
 @router.get('/')
 async def get(db: Session = Depends(get_db)):
-    members = db.query(Member).all()
+    members = db.query(MemberModel).all()
     return members
 
 
@@ -28,16 +31,29 @@ async def save(db: Session = Depends(get_db)):
 
 @router.post('/send-code')
 async def send_code(data: SendMail, db: Session = Depends(get_db)):
+    """
+    인증코드 전송
+    :param data:
+    :param db:
+    :return:
+    """
     common = Common()
-    # 코드생성
+    email_verify = EmailVerifications(db=db)
+    ver = Verification()
+    # 인증코드생성
     code = common.rand_number_code()
     # 생성후 디비 저장
+    now = datetime.datetime.now()
+    instance = EmailVerificationModel(email=data.email, code=code, expired_at=now)
+    email_verify.save(instance=instance)
     # 이메일 전송
+    ver.send_mail(code, data.email)
+
     return data
 
 
 @router.post('/email-verify')
-async def email_verify(data: EmailVerification, db: Session = Depends(get_db)):
+async def email_verify(data: EmailVerificationSchema, db: Session = Depends(get_db)):
     """
     이메일 인증
     :param data:

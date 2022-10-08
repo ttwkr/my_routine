@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, TIMESTAMP
 from app.database.session import Base
 
 
-class Member(Base):
+class MemberModel(Base):
     __tablename__ = "member"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -11,10 +11,10 @@ class Member(Base):
     email = Column(String)
 
 
-class EmailVerification(Base):
+class EmailVerificationModel(Base):
     __tablename__ = "email_verification"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True,)
     email = Column(String)
     code = Column(String)
     expired_at = Column(TIMESTAMP)
