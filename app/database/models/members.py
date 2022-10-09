@@ -22,4 +22,5 @@ class EmailVerificationModel(Base):
 
     def save(self, db: Session, instance):
         db.add(instance)
+        db.flush()
         db.commit()

@@ -47,7 +47,7 @@ async def send_code(data: SendMail, background_tasks: BackgroundTasks, db: Sessi
     instance = EmailVerificationModel(email=data.email, code=code, expired_at=now)
     EmailVerificationModel().save(db=db, instance=instance)
     # 이메일 전송
-    # 오래 걸려 백그라운드 작업으로 돌림(비동기
+    # 오래 걸려 백그라운드 작업으로 돌림(비동기)
     background_tasks.add_task(ver.send_mail, code, data.email)
 
     return data
@@ -61,7 +61,16 @@ async def email_verify(data: EmailVerificationSchema, db: Session = Depends(get_
     :param db:
     :return:
     """
-    return data
+
+    # 이메일로 최근 코드 조회
+    q = db.query(EmailVerificationModel).filter(
+        EmailVerificationModel.email == data.email,
+        EmailVerificationModel.code == data.code
+    ).first()
+    print(q)
+    # 코드 확인
+    # 맞으면 본인인증 성공
+    return q
 
 
 @router.post('/login/')

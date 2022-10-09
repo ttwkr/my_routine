@@ -6,4 +6,5 @@ class SendMail(BaseModel):
 
 
 class EmailVerificationSchema(BaseModel):
+    email: str
     code: str
